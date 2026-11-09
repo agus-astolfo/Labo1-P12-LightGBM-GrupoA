@@ -3,12 +3,11 @@
 
 ## Descripción del proyecto
 
-Este proyecto evalúa el efecto de aumentar la cantidad de hiperparámetros optimizados simultáneamente mediante optimización bayesiana.
+En este trabajo se utilizó LightGBM y optimización bayesiana para comparar distintas configuraciones de hiperparámetros y evaluar su efecto sobre el rendimiento del modelo.
 
 ## Objetivo
 
 Evaluar si aumentar la cantidad de hiperparámetros optimizados simultáneamente mejora la ganancia obtenida por el modelo.
-
 
 ## Experimentos
 
@@ -37,9 +36,11 @@ Se estableció un límite de 300 iteraciones de BO por experimento, manteniendo 
 
 Los rangos de búsqueda de los hiperparámetros se definieron previamente, manteniendo los mismos rangos para aquellos compartidos entre experimentos. También se evaluó la proximidad de los valores optimizados a los límites establecidos para identificar posibles necesidades de ampliación.
 
-Para automatizar las ejecuciones, se desarrolló un script lanzador de semillas que permite ejecutar secuencialmente los workflows de optimización. Cada integrante del grupo trabajó con cinco semillas diferentes.
+Para automatizar las ejecuciones, se desarrolló un script lanzador de semillas que permite ejecutar secuencialmente los workflows de optimización. Se utilizaron diez semillas diferentes, divididas en dos grupos de cinco, para evaluar la variabilidad de los resultados.
 
-Para cada experimento y semilla se realizaron siete envíos a Kaggle, variando la cantidad de clientes seleccionados entre 1800 y 2400, en incrementos de 100. Esto representa un total de 105 envíos por cada conjunto de cinco semillas.
+Inicialmente, se establecieron siete envíos a Kaggle por experimento y semilla, variando la cantidad de clientes seleccionados entre 1800 y 2400, en incrementos de 100. En aquellos casos donde la ganancia máxima se obtuvo en alguno de los extremos del rango (1800 o 2400), se amplió el rango de cortes para evaluar si era posible obtener una mayor ganancia.
+
+Los notebooks utilizados para estas ampliaciones se identificaron con el nombre `s[número de semilla]_k_mod_Exp[experimento]`, por ejemplo, `s143249_k_mod_ExpA`. Esto representa un total inicial de 105 envíos por cada conjunto de cinco semillas, sin contar los envíos adicionales realizados durante las ampliaciones.
 
 El entrenamiento del modelo se realizó con datos de julio de 2021 y su rendimiento se evaluó sobre septiembre de 2021.
 
@@ -105,11 +106,9 @@ El repositorio contiene los scripts utilizados para los experimentos de optimiza
 
 Contiene los workflows de optimización de los experimentos A, B y C, junto con los scripts lanzadores de semillas correspondientes a cada integrante del grupo.
 
-Los archivos que comienzan con a1_ corresponden al alumno 1, mientras que los restantes corresponden al alumno 2. Cada integrante utilizó cinco semillas diferentes para ejecutar los tres experimentos.
+Los archivos que comienzan con a1_ corresponden a las semillas asignadas al alumno 1, mientras que los restantes corresponden a las del alumno 2. Para cada experimento se utilizaron diez semillas diferentes, divididas en dos grupos de cinco.
 
 ### Resultados de las optimizaciones
-
-**`Resultados/`**
 
 Contiene los archivos generados durante las ejecuciones, organizados por experimento:
 
@@ -121,9 +120,19 @@ Dentro de cada experimento, los resultados se encuentran organizados en subcarpe
 
 ### Ampliación de envíos a Kaggle
 
-**`Ampliación_Kaggle/`**
+Contiene los notebooks utilizados para ampliar los rangos de cortes de clientes cuando la ganancia máxima se encontraba en alguno de los extremos del rango evaluado.
 
-Contiene notebooks utilizados para ampliar o modificar las evaluaciones realizadas en Kaggle, identificados según la semilla y el experimento correspondiente.
+Las ampliaciones se realizaron hacia valores menores o mayores, según el extremo en el que se había obtenido la mayor ganancia.
+
+En algunos casos se volvió a evaluar parte o todo el rango inicial, mientras que en otros se enviaron únicamente los cortes adicionales, para evitar repetir envíos y superar el límite diario de Kaggle.
+
+Los notebooks están organizados en tres subcarpetas:
+
+Experimento A
+Experimento B
+Experimento C
+
+Dentro de cada carpeta, los archivos se identifican por el número de semilla y el experimento correspondiente, por ejemplo, s143249_k_mod_ExpA. Cuando fue necesario realizar una segunda ampliación, se agregó V2 al nombre del archivo.
 
 ### Análisis de resultados
 
@@ -132,17 +141,37 @@ Contiene notebooks utilizados para ampliar o modificar las evaluaciones realizad
 
 ## Requisitos e instrucciones de ejecución
 
-Los experimentos se desarrollaron utilizando notebooks de Jupyter (`.ipynb`), ejecutados en una máquina virtual de Google Cloud.
+Los experimentos se desarrollaron utilizando notebooks de Jupyter (.ipynb), ejecutados en una máquina virtual de Google Cloud.
 
 ### Requisitos
 
-- R y Python.
-- LightGBM y otros paquetes de R utilizados en los workflows.
-- `papermill` para automatizar la ejecución de los notebooks.
-- Entorno compatible con Jupyter Notebook.
+-Requisitos
+-R y Python.
+-Paquetes de R: data.table, R.utils, mice, lightgbm, DiceKriging, mlrMBO y yaml.
+-papermill para automatizar la ejecución de los notebooks.
+-Entorno compatible con Jupyter Notebook.
+-Kaggle CLI para realizar los envíos a la competencia.
 
-### Ejecución
+Ejecución
 
-Los workflows de los experimentos A, B y C están desarrollados en R, mientras que los scripts lanzadores de semillas están escritos en Python y utilizan `papermill` para ejecutar automáticamente los experimentos con las distintas semillas.
+Para realizar los experimentos se utilizó el repositorio compartido de la cátedra, que se actualizaba y al que se accedía desde JupyterLab en una VM de Google Cloud.
 
-Para ejecutar los notebooks en otro entorno, es necesario contar con el dataset original, instalar los paquetes requeridos, modificar las rutas de los archivos en los scripts lanzadores y workflows, y configurar el acceso a Kaggle.
+Los archivos estaban organizados en las siguientes carpetas:
+
+datasets/: contiene el dataset original de la competencia.
+
+exp/: donde se guardan los archivos de salida de los workflows (WF).
+
+labo2026/ExpColaborativos/: donde se ubicaron los scripts de los experimentos y los lanzadores de semillas.
+
+En el caso del alumno 2, se creó una subcarpeta P12/ dentro de ExpColaborativos/ para guardar los scripts y trabajar sin modificar por error los archivos originales.
+
+Los workflows de los experimentos A, B y C están desarrollados en R, mientras que los lanzadores de semillas están escritos en Python y utilizan papermill para ejecutar automáticamente los workflows con las distintas semillas.
+
+En el experimento C, una de las semillas del alumno 1 se ejecutó directamente desde el workflow, indicando manualmente el número de semilla y el identificador del experimento. Las otras cuatro semillas se ejecutaron mediante el script lanzador.
+
+Para reproducir los experimentos, primero hay que contar con el dataset original e instalar los paquetes necesarios. Luego, se deben verificar las rutas de los archivos en los lanzadores, teniendo en cuenta que el alumno 2 trabajó dentro de la carpeta P12/. Si se utiliza una estructura de carpetas diferente, también habrá que modificar las rutas del dataset y de los archivos de salida en los workflows.
+
+Una vez configuradas las rutas, se ejecuta el lanzador correspondiente a cada experimento desde JupyterLab. Los resultados se guardan en la carpeta exp/, identificados con el número de ejecución (WF).
+
+Los workflows también realizan envíos automáticos a Kaggle, por lo que es necesario configurar previamente el acceso a la competencia.
