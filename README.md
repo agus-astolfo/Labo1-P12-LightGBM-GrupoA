@@ -1,5 +1,10 @@
 
-# Optimización de hiperparámetros de LightGBM
+# Problema 12: Optimización de hiperparámetros de LightGBM
+
+### Experimentos Colaborativos · Laboratorio de Implementación 1 · Universidad Austral · 2026
+Modalidad Junior · futuro = 202109  · Grupo A
+
+Alumnos: Agustina Astolfo, Diego Pokorski
 
 ## Descripción del proyecto
 
