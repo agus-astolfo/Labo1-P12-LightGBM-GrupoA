@@ -328,6 +328,23 @@ Por estos motivos, y considerando que las ganancias del 9160 y del 9166 fueron m
 
 Archivo seleccionado: KA9166_s100_1700.csv
 
+---
+### Organización de los archivos
+
+En la carpeta `Scripts` se encuentran los notebooks utilizados para realizar las distintas pruebas.
+Por otro lado, dentro de `Resultados` se creó una carpeta para cada experimento (WF9160 a WF9168), donde se dejaron los siguientes archivos:
+`BO_log.txt`: resultados de las iteraciones de optimización bayesiana.
+`PARAM.yml`: configuración de los parámetros utilizados en cada prueba.
+`kaggle/`: archivos CSV correspondientes a los envíos realizados a Kaggle.
+No se incluyeron los modelos entrenados ni los archivos intermedios para evitar que el repositorio ocupe demasiado espacio.
+
+### Archivos completos de los experimentos
+
+Para no cargar todos los archivos en GitHub, se dejaron en Google Drive las carpetas completas de cada experimento, incluyendo los modelos entrenados y los archivos intermedios.
+Los archivos se encuentran disponibles en el siguiente enlace:
+[Carpetas completas de los experimentos - Google Drive](https://drive.google.com/drive/folders/1LgW7u1btdQA4KJhTDfqCGQRy7cAgfJg9?usp=sharing)
+
+
 ## 9. Conclusiones
 
 Luego de realizar las nueve pruebas, se observó que incorporar más modificaciones al workflow no siempre permitió mejorar la ganancia obtenida en Kaggle.
@@ -341,3 +358,4 @@ Por otro lado, aumentar la cantidad de semillas tampoco garantizó una mayor gan
 También se observó que los experimentos con mayor AUC durante la BO no fueron necesariamente los que obtuvieron las mayores ganancias en Kaggle.
 
 Finalmente, creo que una de las principales dificultades fue elegir la predicción final, ya que todas las comparaciones se realizaron utilizando el leaderboard público. Si bien se seleccionó el experimento 9166, no se puede asegurar que sea el que obtenga la mayor ganancia en el privado. Eso se conocerá cuando se publiquen los resultados finales.
+
