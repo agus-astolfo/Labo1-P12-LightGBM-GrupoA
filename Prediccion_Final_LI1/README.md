@@ -79,17 +79,17 @@ resultantes mejoraban la ganancia.
 ## 5. Diseño de las pruebas
 
 Se plantearon nueve pruebas, utilizando distintas combinaciones de las propuestas anteriores.
-| Prueba | ID   | Modificaciones | HP optimizados |   Semillerio   |   Experimento  |
-|--------|------|----------------|----------------|----------------|----------------|
-| 1      | 9160 | 5A + 8A        | 5              | 30             | 9160           |
-| 2      | 9161 | 4B + 6B + 16B  | 5              | 30             | 9161           |
-| 3      | 9162 | 5A + 4B + 2A   | 5              | 30             | 9162           |
-| 4      | 9163 | 5A + 4B        | 5              | 30             | 9163           |
-| 5      | 9164 | 5A + 8A        | 11             | 30             | 9164           |
-| 6      | 9165 | 5A             | 5              | 30             | 9165           |
-| 7      | 9166 | 5A             | 5              | 100            | 9166           |
-| 8      | 9167 | 5A + 8A        | 5              | 100            | 9167           |
-| 9      | 9168 | 5A             | 5              | 100            | 9168           |
+| Prueba | Experimento  | Modificaciones | HP optimizados |   Semillerio   |  
+|--------|------|----------------|----------------|----------------|
+| 1      | 9160 | 5A + 8A        | 5              | 30             | 
+| 2      | 9161 | 4B + 6B + 16B  | 5              | 30             | 
+| 3      | 9162 | 5A + 4B + 2A   | 5              | 30             | 
+| 4      | 9163 | 5A + 4B        | 5              | 30             |
+| 5      | 9164 | 5A + 8A        | 11             | 30             | 
+| 6      | 9165 | 5A             | 5              | 30             | 
+| 7      | 9166 | 5A             | 5              | 100            | 
+| 8      | 9167 | 5A + 8A        | 5              | 100            | 
+| 9      | 9168 | 5A             | 5              | 100            | 
 
 ### Prueba 1 – Problemas 5A + 8A
 
@@ -188,7 +188,117 @@ necesariamente que se vaya a obtener el mismo resultado en el privado.
 | 9165 | 0.93542 | 94205 | 1800 | `learning_rate` | 30 | 4 |
 | 9166 | 0.93485 | **96697** | 1700 | `num_leaves` | 100 | 8 |
 | 9167 | 0.93074 | 88058 | 1900 | `num_iterations`, `learning_rate` | 100 | 6 |
-| 9168 | 0.93473 | 93956| — 1800| `num_iterations` | 100 | 9 |
+| 9168 | 0.93473 | 93956| 1800| `num_iterations` | 100 | 9 |
 
-Los hiperparámetros señalados son aquellos que quedaron dentro del 10% más cercano a alguno de los límites del rango de
-búsqueda de la BO. Los tiempos de ejecución son aproximados.
+Los hiperparámetros señalados son aquellos que quedaron dentro del 10% más cercano a alguno de los límites del rango de búsqueda de la BO. Los tiempos de ejecución son aproximados.
+
+### 7.1 Resultados generales
+
+De las nueve pruebas realizadas, el experimento 9160 obtuvo la mayor ganancia en el leaderboard público de Kaggle. El expeirmento 9166 obtuvo un resultados muy similar pero ligeramente inferior. 
+En ambos casos, el máximo se encontró en el envio de 1700 clientes. 
+
+En general, se observó que las prueba ocn mayor AUC no correspondieron a las mayores ganancias en
+Kaggle. 
+
+En cuanto a la optimización de hiperparámetros, en varios experimentos los mejores valores quedaron próximos a los límites de búsqueda de la BO. Esto llevó a realizar nuevas pruebas ampliando algunos rangos, como en los experimentos 9166 y 9168.
+
+### 7.2. Comparación de resultados
+
+#### 7.2.1. Comparación de las modificaciones
+
+Este apartado permite observar los resultados que surgen de implementar las recomendaciones porpuestas por los ditintos grupos, explicadas en el apartado `4. Modificaciones evaluadas`. 
+
+Para ello se toma como referencia la prueba 6 (experimento 9165), donde se utilizó unicamente 5A.
+
+#### Prueba 6 (9165) vs prueba 1 (9160)
+ Al incorporar 8A a la modificación 5A, se obtuvo una ganancia superior en Kaggle (96864 frente a 94205), con una menor cantidad de clientes seleccionados (1700 frente a 1800) y tiempos de ejecución similares.
+
+En ambos casos fue necesario ampliar los envíos a Kaggle, probando cantidades menores de clientes.
+
+Además, en el experimento 9165, learning_rate quedó próximo a uno de los límites de búsqueda de la BO, mientras que en el 9160 ninguno de los HP presentó esta condición.
+
+La introducción de 8A, en este caso y en esta corrida, permitió obtener una mayor ganancia en Kaggle. 
+
+#### Prueba 6 (9165) vs prueba 4 (9163)
+
+Al incorporar 4B a la modificación 5A, se obtuvo una ganancia inferior en Kaggle (91547 frente a 94205), con una mayor cantidad de clientes seleccionados (1900 frente a 1800) y un mayor tiempo de ejecución aproximado (7 h frente a 4 h).
+
+Solo fue necesario ampliar los envíos a Kaggle en el experimento 9165.
+
+Además, en ambos experimentos, `learning_rate` quedó próximo a uno de los límites de búsqueda de la BO. En el 9163 también ocurrió con `num_iterations` y `num_leaves`.
+
+La introducción de 4B, en este caso y en esta corrida, no mejoró la ganancia obtenida en Kaggle. 
+
+#### Prueba 6 (9165) vs prueba 3 (9162)
+
+Al incorporar 4B y 2A a la modificación 5A, se obtuvo una ganancia inferior en Kaggle (90882 frente a 94205), con una menor cantidad de clientes seleccionados (1400 frente a 1800) y un mayor tiempo de ejecución aproximado (7 h frente a 4 h).
+
+En ambos casos fue necesario ampliar los envíos a Kaggle, probando cantidades menores de clientes.
+En el 9162, se requirieron dos ampliaciones para hallar la ganancia máxima.
+
+Además, en ambos experimentos, `learning_rate` quedó próximo a uno de los límites de búsqueda de la BO. En el 9162 también ocurrió con `num_iterations`.
+
+La introducción de 4B y 2A, en este caso y en esta corrida, no mejoró la ganancia obtenida en Kaggle. 
+
+Además, se realizaron las siguientes comparaciones:
+#### Prueba 3 (9162) vs prueba 4 (9163)
+
+Al incorporar 2A a la combinación 4B + 5A, se obtuvo una ganancia inferior en Kaggle (90882 frente a 91547), con una menor cantidad de clientes seleccionados (1400 frente a 1900) y tiempos de ejecución similares.
+
+En el 9162, se requirieron dos ampliaciones de envíos a Kaggle para hallar la ganancia máxima.
+
+Además, en ambos experimentos, `learning_rate` y `num_iterations` quedaron próximos a uno de los límites de búsqueda de la BO. En el 9163 también ocurrió con `num_leaves`.
+
+La introducción de 2A, en este caso y en esta corrida, no mejoró la ganancia obtenida en Kaggle. 
+
+#### Prueba 2 (9161) vs general (otras pruebas)
+
+La prueba 2 (9161) combinó las modificaciones 4B, 6B y 16B. En este caso, se decidió comparar su resultado con el resto de las pruebas, ya que las modificaciones 6B y 16B solamente se evaluaron en esta combinación.
+
+Se observa que obtuvo una ganancia máxima en Kaggle (93790) similar a la de los experimentos 9168 (93956) y 9164 (93707). iFue inferior a la de los experimentos 9160 (96864), 9166 (96697) y 9165 (94205), pero superior a la de los experimentos 9162 (90882), 9163 (91547), y 9167 (88058). 
+
+En este caso no fue necesario ampliar los envíos a Kaggle para encontrar la ganancia máxima, que se obtuvo seleccionando 2200 clientes.
+
+Además, `num_leaves` quedó próximo a uno de los límites de búsqueda de la BO, al igual que en los experimentos 9163 y 9166. 
+
+Esta combinación obtuvo una ganancia intermedia respecto de las demás pruebas. Sin embargo, no es posible determinar qué aportó cada una de las modificaciones al resultado obtenido.
+
+#### 7.2.2. Comparación de la optimización de hiperparámetros
+
+#### Prueba 1 (9160) vs. prueba 5 (9164)
+
+En ambas pruebas se utilizaron las modificaciones 5A y 8A. La diferencia fue la cantidad de hiperparámetros optimizados mediante BO, pasando de 5 a 11.
+
+Se observó que la ganancia máxima en Kaggle del experimento 9160 (96864) fue superior a la del 9164 (93707). Sin embargo, el tiempo de ejecución fue menor en el 9164 (3 h frente a 4 h).
+
+En ambos experimentos fue necesario ampliar los envíos a Kaggle, probando cantidades menores de clientes. La ganancia máxima se obtuvo seleccionando 1700 clientes en el 9160 y 1800 en el 9164.
+
+Además, en el experimento 9164, `max_depth` y `bagging_freq` quedaron próximos a los límites de búsqueda de la BO, mientras que en el 9160 ninguno de los HP presentó esta condición.
+
+Sin embargo, al haberse realizado una sola corrida de BO por configuración, aun utilizando un semillerio final de 30 modelos, no alcanza para determinar si esta diferencia se mantendría al repetir las pruebas.
+
+Por lo tanto, en esta comparación y con los resultados obtenidos, aumentar de 5 a 11 los hiperparámetros optimizados simultáneamente mediante BO no permitió mejorar la ganancia en Kaggle, aunque sí se observó un menor tiempo de ejecución.
+
+#### Prueba 6 (9165) vs. prueba 7 (9166)
+
+En el experimento 9165, `learning_rate` quedó próximo a uno de los límites de búsqueda de la BO. Por este motivo, se decidió ampliar su rango y también el de `num_iterations`, por la relación que existe entre ambos hiperparámetros.
+
+En la escala logarítmica utilizada por la BO, `learning_rate` pasó de (-7, -0.1) a (-9, -0.1) y `num_iterations` de (2, 10) a (2, 10.5).
+
+Con estos cambios se obtuvo una ganancia superior en Kaggle (96697 frente a 94205), con una menor cantidad de clientes seleccionados (1700 frente a 1800).
+
+El tiempo de ejecución aproximado del 9166 duplicó al del 9165 (8 h frente a 4 h). En ambos casos fue necesario ampliar los envíos a Kaggle, probando cantidades menores de clientes.
+
+En el experimento 9166, `num_leaves` quedó próximo a uno de los límites de búsqueda de la BO.
+
+En esta corrida, la ampliación de los rangos de búsqueda y el aumento del semillerio permitieron obtener una mayor ganancia en Kaggle. Sin embargo, al realizar ambos cambios al mismo tiempo, no es posible determinar cuánto aportó cada uno a la mejora.
+
+#### Prueba 7 (9166) vs. prueba 9 (9168)
+
+En este caso como en el experimento 9166, `num_leaves` quedó próximo a uno de los límites de búsqueda de la BO, se decidió ampliar el rango de búsqueda de este HP. 
+
+Se utilizó como base el workflow del experimento 9166 y se amplio el rango en escala logarítica de `num_leaves` de (2, 11) a (2, 11.5). 
+
+
+
+#### 7.2.3. Comparación del semillero
