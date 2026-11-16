@@ -299,6 +299,45 @@ En este caso como en el experimento 9166, `num_leaves` quedó próximo a uno de 
 
 Se utilizó como base el workflow del experimento 9166 y se amplio el rango en escala logarítica de `num_leaves` de (2, 11) a (2, 11.5). 
 
-
-
 #### 7.2.3. Comparación del semillero
+
+#### Prueba 1 (9160) vs. prueba 8 (9167)
+Se utilizó la misma combinación de modificaciones, aumentando el semillero de 30 a 100 modelos.
+
+Se observó que la ganancia fue menor respecto al experimento 9160 (88058 frente a 96864). En ambos casos fue necesario ampliar los envíos a Kaggle, probando cantidades menores de clientes. El tiempo de ejecución aproximado fue menor en el 9160 (4 h frente a 6 h).
+
+Si bien el experimento 9167 presentó una menor ganancia máxima, los resultados entre los distintos envíos fueron más estables, mostrando una menor variación de la ganancia según la cantidad de clientes seleccionados.
+
+En esta corrida, aumentar el semillero a 100 modelos no permitió mejorar la ganancia máxima obtenida en Kaggle. Sin embargo, como se volvió a ejecutar la BO, no es posible atribuir las diferencias únicamente al número de semillas.
+
+## 8. Selección de la predicción final
+
+Decidí seleccionar la predicción del experimento 9166, correspondiente a 100 semillas y 1700 clientes, con una ganancia de 96697 en el leaderboard público de Kaggle.
+
+La predicción de mayor ganancia correspondió al experimento 9160, pero la diferecia con la obtenida en el experimento 9166 es muy pequeña (96864 frente a 96697). 
+
+La desición de la elección se baso en que el experimento 9166 requirió la implementción de una única modificación, relativa al tratamiento de los meses de pandemia, mientras que el experimento 9160 sumó ademas el efecto de aumentar los meses de validación para la BO. Además, se ampliarion los rango de búsqueda de la BO para `learning_rate` y `num_iterations` y se aumentó el semillerio de 30 a 100. 
+
+Aunque `num_leaves` quedó próximo a uno de los límites de búsqueda de la BO, se realizó una última prueba ampliando también ese rango (9168), pero no se obtuvo una mejora en la ganancia.
+
+Una de las dificultades al elegir la predicción final fue que los resultados disponibles corresponden al leaderboard público. Por eso, no necesariamente la prueba con la mayor ganancia será la que obtenga el mejor resultado en el privado.
+
+Además, seguir realizando nuevas optimizaciones y seleccionando los resultados según la ganancia pública podría aumentar el riesgo de sobreajuste a ese conjunto de datos.
+
+Por estos motivos, y considerando que las ganancias del 9160 y del 9166 fueron muy similares, se decidió seleccionar el experimento 9166.
+
+Archivo seleccionado: KA9166_s100_1700.csv
+
+## 9. Conclusiones
+
+Luego de realizar las nueve pruebas, se observó que incorporar más modificaciones al workflow no siempre permitió mejorar la ganancia obtenida en Kaggle.
+
+Lo mismo ocurrió al aumentar de 5 a 11 la cantidad de hiperparámetros optimizados mediante BO. En esta comparación, optimizar más HP simultáneamente no permitió obtener una mayor ganancia.
+
+En cuanto a los rangos de búsqueda de los HP, al ampliarlos en el experimento 9166 se obtuvo una mejora respecto del 9165. Sin embargo, también se aumentó el semillero de 30 a 100 modelos, por lo que no se puede saber cuál de los dos cambios permitió mejorar la ganancia. En la última prueba (9168), al ampliar también el rango de `num_leaves`, no se obtuvo una mejora.
+
+Por otro lado, aumentar la cantidad de semillas tampoco garantizó una mayor ganancia. En el experimento 9167, la ganancia máxima fue menor que en el 9160, aunque presentó una menor variación entre los distintos envíos a Kaggle.
+
+También se observó que los experimentos con mayor AUC durante la BO no fueron necesariamente los que obtuvieron las mayores ganancias en Kaggle.
+
+Finalmente, creo que una de las principales dificultades fue elegir la predicción final, ya que todas las comparaciones se realizaron utilizando el leaderboard público. Si bien se seleccionó el experimento 9166, no se puede asegurar que sea el que obtenga la mayor ganancia en el privado. Eso se conocerá cuando se publiquen los resultados finales.
